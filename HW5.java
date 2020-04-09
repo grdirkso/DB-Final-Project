@@ -2,21 +2,20 @@ import java.sql.*;
 import java.util.Properties;
 import java.util.Scanner;
 import java.text.DecimalFormat;
-public class final {
+public class HW5 {
 	private Connection connection;
 	private Statement statement;
 	
-	public final() {
+	public HW5() {
 		connection = null;
 		statement = null;
 	}
 
 	public static void main(String[] args) throws Exception{
 		String Username="grdirkso";
-		String Password="G#Dirk$o223!";
-		final db = new final();
+		String Password="G#Dirk$o223";
+		HW5 db = new HW5();
 		db.connect(Username, Password);
-		db.menu();
 	}
 
 	public void connect(String Username, String mysqlPassword) throws Exception {
