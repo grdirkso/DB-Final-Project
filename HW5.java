@@ -17,6 +17,8 @@ public class HW5 {
 		HW5 db = new HW5();
 		db.connect(Username, Password);
 		db.initDatabase(Username, Password, Username);
+		String name = arg[0];
+		System.out.println(name);
 	}
 
 	public void connect(String Username, String mysqlPassword) throws Exception {
