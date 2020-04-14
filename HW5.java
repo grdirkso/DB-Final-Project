@@ -17,8 +17,29 @@ public class HW5 {
 		HW5 db = new HW5();
 		db.connect(Username, Password);
 		db.initDatabase(Username, Password, Username);
-		String name = arg[0];
-		System.out.println(name);
+		String function = args[0];
+		if(function.equals("addStudent")) {
+			String id = args[1];
+			String fname = args[2];
+			String lname = args[3];
+			String major = args[4];
+			db.addStudent(id, fname, lname, major);
+		}
+	}
+
+	public void addStudent(String id, String fname, String lname, String major) throws SQLException  {
+		String values = " ' " + id + " ',' " + fname + " ',' " + lname +" ',' " + major + " '"; 
+
+		try {
+			insert("STUDENT", values);
+			String q = "SELECT * FROM STUDENT;";
+			ResultSet resultSet = statement.executeQuery(q);
+			print(resultSet);
+		}
+		catch(SQLException e) {
+			System.out.println(e);
+			System.out.println("Unsuccessful insert into STUDENT");
+		}
 	}
 
 	public void connect(String Username, String mysqlPassword) throws Exception {
@@ -100,7 +121,7 @@ public class HW5 {
 		statement.executeUpdate("ALTER TABLE COURSE AUTO_INCREMENT = 101;");
 		statement.executeUpdate("ALTER TABLE ENROLLMENT AUTO_INCREMENT = 201;");
 
-        insert("STUDENT", "'010816228', 'CAROLINE GESCHWEND', 'COMPUTER SCIENCE'");
+        insert("STUDENT", "'010816228', 'CAROLINE GSCHWEND', 'COMPUTER SCIENCE'");
         insert("STUDENT", "'010814651', 'GILLIAN DIRKSON', 'COMPUTER SCIENCE'");
 
         insert("COURSE", " NULL,'CSCE', '4523', 'DATABASE', 3");
