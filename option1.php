@@ -33,8 +33,9 @@
       }
     }
   ?>
-<h1 class="col-md-12 col-sm-12">Add a student to the Student table.</h1>
-
+<h1 class="col-8">Add a student to the Student table.</h1>
+<form action="http://www.csce.uark.edu/~cggschwe/DB-Final-Project/HW5.php">
+<input type="submit" value="Go Back" class="btn btn-primary"/> </form>
 <div class="container col-md-6">
 <form action="option1.php" method="post" role="form">
 <label for="id" class="col-sm-8 col-form-label">Student ID:</label> 
