@@ -1,0 +1,1 @@
+<h1>Add an application to the Enrollment table.</h1>

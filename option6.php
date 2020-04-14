@@ -1,0 +1,1 @@
+<h1>View all courses for a given student (given the StudentID, display all attributes in the Course table for each course)</h1>

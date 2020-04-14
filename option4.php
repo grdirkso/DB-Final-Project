@@ -1,0 +1,1 @@
+<h1>View all students (display all attributes in the table for each student)</h1>

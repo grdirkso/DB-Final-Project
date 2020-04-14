@@ -1,0 +1,1 @@
+<h1>View all courses from a given department (display all attributes in the Course table for each course)</h1>
