@@ -25,6 +25,10 @@ public class HW5 {
 			String major = args[4];
 			db.addStudent(id, fname, lname, major);
 		}
+		else if(function.equals("viewCourses")){
+			String dep = args[1];
+			db.viewCourses(dep);
+		}
 	}
 
 	public void addStudent(String id, String fname, String lname, String major) throws SQLException  {
@@ -40,6 +44,18 @@ public class HW5 {
 		catch(SQLException e) {
 			System.out.println(e);
 			System.out.println("Unsuccessful insert into STUDENT");
+		}
+	}
+
+	public void viewCourses(String department) {
+		String q = "SELECT * FROM COURSE WHERE DEPARTMENT_CODE = '" + department + "';";
+		try {
+			ResultSet results = statement.executeQuery(q);
+			print(results);
+		}
+		catch(SQLException e) {
+			System.out.println(e);
+			System.out.println("Unsuccessful select from COURSE");
 		}
 	}
 
