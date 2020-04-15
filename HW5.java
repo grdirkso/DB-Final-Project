@@ -28,10 +28,11 @@ public class HW5 {
 	}
 
 	public void addStudent(String id, String fname, String lname, String major) throws SQLException  {
-		String values = " ' " + id + " ',' " + fname + " ',' " + lname +" ',' " + major + " '"; 
+		String values = " ' " + id + " ',' " + fname + " " + lname +" ',' " + major + " '"; 
 
 		try {
-			insert("STUDENT", values);
+			statement.executeUpdate("INSERT into STUDENT values("+values+")");
+			//insert("STUDENT", values);
 			String q = "SELECT * FROM STUDENT;";
 			ResultSet resultSet = statement.executeQuery(q);
 			print(resultSet);
