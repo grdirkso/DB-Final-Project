@@ -25,6 +25,13 @@ public class HW5 {
 			String major = args[4];
 			db.addStudent(id, fname, lname, major);
 		}
+        if(function.equals("addCourse")) {
+			String code = args[1];
+			String number = args[2];
+			String title = args[3];
+			String hours = args[4];
+			db.addCourse(code, number, title, hours);
+		}
 	}
 
 	public void addStudent(String id, String fname, String lname, String major) throws SQLException  {
@@ -41,6 +48,22 @@ public class HW5 {
 			System.out.println("Unsuccessful insert into STUDENT");
 		}
 	}
+
+    public void addCourse(String code, String number, String title, String hours) throws SQLException  {
+        try{
+            statement = connection.createStatement();
+            statement.executeUpdate("USE grdirkso;");
+            String query = "INSERT into COURSE values (NULL,'"+ code +"','"+ number+"','"+ title + "',"+ hours+");";
+            statement.executeUpdate(query);
+            String q = "SELECT * FROM COURSE;";
+			ResultSet resultSet = statement.executeQuery(q);
+			print(resultSet);
+        } 
+        catch(SQLException e) {
+			System.out.println(e);
+			System.out.println("Unsuccessful insert into Course");
+		}
+    }
 
 	public void connect(String Username, String mysqlPassword) throws Exception {
         try {
