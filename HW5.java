@@ -25,20 +25,24 @@ public class HW5 {
 			String major = args[4];
 			db.addStudent(id, fname, lname, major);
 		}
-        if(function.equals("addCourse")) {
+        else if(function.equals("addCourse")) {
 			String code = args[1];
 			String number = args[2];
 			String title = args[3];
 			String hours = args[4];
 			db.addCourse(code, number, title, hours);
+		else if(function.equals("viewCourses")){
+			String dep = args[1];
+			db.viewCourses(dep);
 		}
 	}
 
 	public void addStudent(String id, String fname, String lname, String major) throws SQLException  {
-		String values = " ' " + id + " ',' " + fname + " ',' " + lname +" ',' " + major + " '"; 
+		String values = " ' " + id + " ',' " + fname + " " + lname +" ',' " + major + " '"; 
 
 		try {
-			insert("STUDENT", values);
+			statement.executeUpdate("INSERT into STUDENT values("+values+")");
+			//insert("STUDENT", values);
 			String q = "SELECT * FROM STUDENT;";
 			ResultSet resultSet = statement.executeQuery(q);
 			print(resultSet);
@@ -64,6 +68,17 @@ public class HW5 {
 			System.out.println("Unsuccessful insert into Course");
 		}
     }
+	public void viewCourses(String department) {
+		String q = "SELECT * FROM COURSE WHERE DEPARTMENT_CODE = '" + department + "';";
+		try {
+			ResultSet results = statement.executeQuery(q);
+			print(results);
+		}
+		catch(SQLException e) {
+			System.out.println(e);
+			System.out.println("Unsuccessful select from COURSE");
+		}
+	}
 
 	public void connect(String Username, String mysqlPassword) throws Exception {
         try {
