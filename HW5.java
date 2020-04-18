@@ -25,15 +25,23 @@ public class HW5 {
 			String major = args[4];
 			db.addStudent(id, fname, lname, major);
 		}
-        else if(function.equals("addCourse")) {
+       		else if(function.equals("addCourse")) {
 			String code = args[1];
 			String number = args[2];
 			String title = args[3];
 			String hours = args[4];
 			db.addCourse(code, number, title, hours);
+		}
 		else if(function.equals("viewCourses")){
 			String dep = args[1];
 			db.viewCourses(dep);
+		}
+		else if(function.equals("viewCoursesForStudent")){
+			String id = args[1];
+			db.viewCoursesForStudent(id);
+		}
+		else {
+			System.out.println("error");
 		}
 	}
 
@@ -77,6 +85,18 @@ public class HW5 {
 		catch(SQLException e) {
 			System.out.println(e);
 			System.out.println("Unsuccessful select from COURSE");
+		}
+	}
+
+	public void viewCoursesForStudent(String id) {
+		String q = "SELECT * FROM COURSE JOIN ENROLLMENT  WHERE COURSE_ID = C_ID AND  STUDENT_ID = '" + id + "';";
+		try {
+			ResultSet results = statement.executeQuery(q);
+			print(results);
+		}
+		catch(SQLException e) {
+			System.out.println(e);
+			System.out.println("Unsuccessful select from COURSE JOINED ENROLLMENT");
 		}
 	}
 
