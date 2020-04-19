@@ -25,12 +25,21 @@ public class HW5 {
 			String major = args[4];
 			db.addStudent(id, fname, lname, major);
 		}
-       		else if(function.equals("addCourse")) {
+       	else if(function.equals("addCourse")) {
 			String code = args[1];
 			String number = args[2];
 			String title = args[3];
 			String hours = args[4];
 			db.addCourse(code, number, title, hours);
+		} 
+        else if(function.equals("addApplication")) {
+			String s_ID = args[1];
+			String code = args[2];
+			String number = args[3];
+			db.addApplication(s_ID, code, number);
+		}
+        else if(function.equals("viewStudents")){
+			db.viewStudents();
 		}
 		else if(function.equals("viewCourses")){
 			String dep = args[1];
@@ -65,17 +74,60 @@ public class HW5 {
         try{
             statement = connection.createStatement();
             statement.executeUpdate("USE grdirkso;");
-            String query = "INSERT into COURSE values (NULL,'"+ code +"','"+ number+"','"+ title + "',"+ hours+");";
-            statement.executeUpdate(query);
-            String q = "SELECT * FROM COURSE;";
-			ResultSet resultSet = statement.executeQuery(q);
-			print(resultSet);
+            ResultSet course = statement.executeQuery("SELECT * FROM COURSE WHERE DEPARTMENT_CODE = '" + code + "' AND COURSE_NUM = '" + number +"';");
+			if(!course.next()){
+              String query = "INSERT into COURSE values (NULL,'"+ code +"','"+ number+"','"+ title + "',"+ hours+");";
+              statement.executeUpdate(query);
+              String q = "SELECT * FROM COURSE;";
+			  ResultSet resultSet = statement.executeQuery(q);
+			  print(resultSet);  
+              System.out.println("Course Successfully Inserted");
+            } else {
+               System.out.println("That course already exists in the system"); 
+            }
+            
         } 
         catch(SQLException e) {
 			System.out.println(e);
 			System.out.println("Unsuccessful insert into Course");
 		}
     }
+    public void addApplication(String s_ID, String code, String number) throws SQLException  {
+        try{
+            statement = connection.createStatement();
+            statement.executeUpdate("USE grdirkso;");
+			ResultSet cID = statement.executeQuery("SELECT C_ID FROM COURSE WHERE DEPARTMENT_CODE ='"+ code +"' AND COURSE_NUM ='"+ number +"';");
+			cID.next();
+			String c_id = cID.getString(1);
+			ResultSet enrollment = statement.executeQuery("SELECT * FROM ENROLLMENT WHERE STUDENT_ID ='" + s_ID + "'AND COURSE_ID = '" + c_id + "';" );
+            if(!enrollment.next()){
+				String query = "INSERT into ENROLLMENT values (NULL,'"+ s_ID +"',"+ c_id +");";
+            	statement.executeUpdate(query);
+            	String q = "SELECT * FROM ENROLLMENT natural join COURSE where COURSE_ID = C_ID;";
+				ResultSet resultSet = statement.executeQuery(q);
+				print(resultSet);
+			}
+			else {
+				System.out.println("That student is already enrolled in that course");
+			}
+			
+        } 
+        catch(SQLException e) {
+			System.out.println(e);
+			System.out.println(" Unsuccessful insert into Course");
+		}
+    }
+    public void viewStudents() {
+		String q = "SELECT * FROM STUDENT;";
+		try {
+			ResultSet results = statement.executeQuery(q);
+			print(results);
+		}
+		catch(SQLException e) {
+			System.out.println(e);
+			System.out.println("No Students to display");
+		}
+	}
 	public void viewCourses(String department) {
 		String q = "SELECT * FROM COURSE WHERE DEPARTMENT_CODE = '" + department + "';";
 		try {
@@ -155,7 +207,7 @@ public class HW5 {
                 columnValue = resultSet.getString(i);
                 System.out.print(columnValue);
             }
-            System.out.println("");
+            System.out.println(" ");
         }
     }
 
