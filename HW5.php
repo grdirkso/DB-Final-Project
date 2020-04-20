@@ -9,11 +9,6 @@
 		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
 		<h1>Caroline Gschwend & Gillian Dirkson Final Project</h1>
-		<form role="form" action="HW5.php" method="post">
-			<label for="inputName"class="col-sm-2 col-form-label">Name: </label>
-			<input type="text" id="inputName" placeholder="Name" name="name"><br>
-   			 <input name="submit" type="submit" class="btn btn-primary">
-		</form>
 		<h2>Use the following 6 functions to manipulate the Student, Course, and Enrollment databases.</h2>
 		<ul>
 			<li><a href="option1.php">Add a student to the Student table.</a></li>
