@@ -12,11 +12,14 @@ public class HW5 {
 	}
 
 	public static void main(String[] args) throws Exception{
+		//connect to MYSQL
 		String Username="grdirkso";
 		String Password="G#Dirk$o223";
 		HW5 db = new HW5();
 		db.connect(Username, Password);
 		db.initDatabase(Username, Password, Username);
+		//get the first argument, this is the function
+		//the arguments after are the parameters
 		String function = args[0];
 		if(function.equals("addStudent")) {
 			String id = args[1];
@@ -25,12 +28,21 @@ public class HW5 {
 			String major = args[4];
 			db.addStudent(id, fname, lname, major);
 		}
-       		else if(function.equals("addCourse")) {
+       	else if(function.equals("addCourse")) {
 			String code = args[1];
 			String number = args[2];
 			String title = args[3];
 			String hours = args[4];
 			db.addCourse(code, number, title, hours);
+		} 
+        else if(function.equals("addApplication")) {
+			String s_ID = args[1];
+			String code = args[2];
+			String number = args[3];
+			db.addApplication(s_ID, code, number);
+		}
+        else if(function.equals("viewStudents")){
+			db.viewStudents();
 		}
 		else if(function.equals("viewCourses")){
 			String dep = args[1];
@@ -45,61 +57,144 @@ public class HW5 {
 		}
 	}
 
+	//adds a student to the db 
+	//needs student id, name and major
 	public void addStudent(String id, String fname, String lname, String major) throws SQLException  {
 		String values = " ' " + id + " ',' " + fname + " " + lname +" ',' " + major + " '"; 
 
 		try {
-			statement.executeUpdate("INSERT into STUDENT values("+values+")");
-			//insert("STUDENT", values);
-			String q = "SELECT * FROM STUDENT;";
-			ResultSet resultSet = statement.executeQuery(q);
-			print(resultSet);
+			//if the student id is not already in the db then insert
+			ResultSet student = statement.executeQuery("SELECT * FROM STUDENT WHERE S_ID ='" + id + "';" );
+            if(!student.next()){
+				//insert student
+				statement.executeUpdate("INSERT into STUDENT values("+values+")");
+				//show the students in the db
+				String q = "SELECT * FROM STUDENT;";
+				ResultSet resultSet = statement.executeQuery(q);
+				print(resultSet);
+			}
+			//if student already in the db, notify user
+			else {
+				System.out.println("That student already exists in the database");
+			}
 		}
+		//something is wrong with what the user supplied 
 		catch(SQLException e) {
 			System.out.println(e);
 			System.out.println("Unsuccessful insert into STUDENT");
 		}
 	}
 
+	//add a course to the db
+	//takes in department code, course number, title and hours
     public void addCourse(String code, String number, String title, String hours) throws SQLException  {
         try{
             statement = connection.createStatement();
             statement.executeUpdate("USE grdirkso;");
-            String query = "INSERT into COURSE values (NULL,'"+ code +"','"+ number+"','"+ title + "',"+ hours+");";
-            statement.executeUpdate(query);
-            String q = "SELECT * FROM COURSE;";
-			ResultSet resultSet = statement.executeQuery(q);
-			print(resultSet);
+            ResultSet course = statement.executeQuery("SELECT * FROM COURSE WHERE DEPARTMENT_CODE = '" + code + "' AND COURSE_NUM = '" + number +"';");
+			//if exact course not in db then insrt
+			if(!course.next()){
+              String query = "INSERT into COURSE values (NULL,'"+ code +"','"+ number+"','"+ title + "',"+ hours+");";
+              statement.executeUpdate(query);
+			  //show all courses in the db
+              String q = "SELECT * FROM COURSE;";
+			  ResultSet resultSet = statement.executeQuery(q);
+			  print(resultSet);  
+              System.out.println("Course Successfully Inserted");
+			//exact course is in the db
+            } else {
+               System.out.println("That course already exists in the system"); 
+            }
+            
         } 
+		//something is wrong with what the user has entered
         catch(SQLException e) {
 			System.out.println(e);
 			System.out.println("Unsuccessful insert into Course");
 		}
     }
-	public void viewCourses(String department) {
-		String q = "SELECT * FROM COURSE WHERE DEPARTMENT_CODE = '" + department + "';";
+    //add application to db
+	//takes student id, course code and course number
+    public void addApplication(String s_ID, String code, String number) throws SQLException  {
+        try{
+            statement = connection.createStatement();
+            statement.executeUpdate("USE grdirkso;");
+			//get C_ID from course table 
+			ResultSet cID = statement.executeQuery("SELECT C_ID FROM COURSE WHERE DEPARTMENT_CODE ='"+ code +"' AND COURSE_NUM ='"+ number +"';");
+			cID.next();
+			//convert ResultSet to string
+			String c_id = cID.getString(1);
+			ResultSet enrollment = statement.executeQuery("SELECT * FROM ENROLLMENT WHERE STUDENT_ID ='" + s_ID + "'AND COURSE_ID = '" + c_id + "';" );
+            //if application not in the db then insert
+			if(!enrollment.next()){
+				String query = "INSERT into ENROLLMENT values (NULL,'"+ s_ID +"',"+ c_id +");";
+            	statement.executeUpdate(query);
+				//join enrollment and course tables
+				//show student ID, and all information of couse they are in
+            	String q = "SELECT STUDENT_ID, DEPARTMENT_CODE, COURSE_NUM, TITLE, HOURS FROM ENROLLMENT natural join COURSE where COURSE_ID = C_ID;";
+				ResultSet resultSet = statement.executeQuery(q);
+				print(resultSet);
+			}
+			//application already exists in the db
+			else {
+				System.out.println("That student is already enrolled in that course");
+			}
+        } 
+		//something is wrong with what the user has entered
+        catch(SQLException e) {
+			System.out.println(e);
+			System.out.println(" Unsuccessful insert into Course");
+		}
+    }
+	//vire students
+    public void viewStudents() {
+		String q = "SELECT * FROM STUDENT;";
 		try {
+			//shows all students in the db
 			ResultSet results = statement.executeQuery(q);
 			print(results);
 		}
+		//there are currently no students in the db
+		catch(SQLException e) {
+			System.out.println(e);
+			System.out.println("No Students to display");
+		}
+	}
+	//view courses
+	//takes in detartment
+	public void viewCourses(String department) {
+		//find all courses in the given department
+		String q = "SELECT * FROM COURSE WHERE DEPARTMENT_CODE = '" + department + "';";
+		try {
+			//show the selection
+			ResultSet results = statement.executeQuery(q);
+			print(results);
+		}
+		//there are no courses in thet department
 		catch(SQLException e) {
 			System.out.println(e);
 			System.out.println("Unsuccessful select from COURSE");
 		}
 	}
 
+	//view courses that a student is in
+	//takes in student id
 	public void viewCoursesForStudent(String id) {
+		//get all courses a student is in
 		String q = "SELECT * FROM COURSE JOIN ENROLLMENT  WHERE COURSE_ID = C_ID AND  STUDENT_ID = '" + id + "';";
 		try {
+			//display the courses
 			ResultSet results = statement.executeQuery(q);
 			print(results);
 		}
+		//something is wrong with what the user has entered
 		catch(SQLException e) {
 			System.out.println(e);
 			System.out.println("Unsuccessful select from COURSE JOINED ENROLLMENT");
 		}
 	}
 
+	//connect to the db
 	public void connect(String Username, String mysqlPassword) throws Exception {
         try {
 	  Class.forName("com.mysql.jdbc.Driver"); 	
@@ -142,7 +237,7 @@ public class HW5 {
                 System.out.print(",  ");
             System.out.print(metaData.getColumnName(i));
         }
-        System.out.println();
+        System.out.println(" |");
     }
 
     // Print the attribute values for all tuples in the result
@@ -151,11 +246,11 @@ public class HW5 {
         while (resultSet.next()) {
             for (int i = 1; i <= numColumns; i++) {
                 if (i > 1)
-                    System.out.print(",  ");
+                    System.out.print(", ");
                 columnValue = resultSet.getString(i);
                 System.out.print(columnValue);
             }
-            System.out.println("");
+            System.out.println(" |");
         }
     }
 
@@ -173,21 +268,7 @@ public class HW5 {
     // Assumes that the tables are already created
     public void initDatabase(String Username, String Password, String SchemaName) throws SQLException {
         statement = connection.createStatement();
-		statement.executeUpdate("DELETE from ENROLLMENT");
-        statement.executeUpdate("DELETE from STUDENT");
-        statement.executeUpdate("DELETE from COURSE");
 		statement.executeUpdate("ALTER TABLE COURSE AUTO_INCREMENT = 101;");
 		statement.executeUpdate("ALTER TABLE ENROLLMENT AUTO_INCREMENT = 201;");
-
-        insert("STUDENT", "'010816228', 'CAROLINE GSCHWEND', 'COMPUTER SCIENCE'");
-        insert("STUDENT", "'010814651', 'GILLIAN DIRKSON', 'COMPUTER SCIENCE'");
-
-        insert("COURSE", " NULL,'CSCE', '4523', 'DATABASE', 3");
-        insert("COURSE", "NULL,'CSCE', '4813', 'GRAPHICS', 3");
-    
-        insert("ENROLLMENT", " NULL,'010814651', 101");
-		insert("ENROLLMENT", " NULL,'010814651', 102");
-        insert("ENROLLMENT", " NULL,'010816228', 101");
-        
     }
 }	

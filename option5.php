@@ -15,10 +15,9 @@
       if(empty($_POST['dep'])) {
         $errDep= 'Please enter the department';
       } else {
-	echo "The form has been submitted";
         // command to run the java and supplies the java with parameters
+	echo " The form has been submitted ";
      	$command = 'java -cp .:mysql-connector-java-5.1.40-bin.jar HW5 ' .'viewCourses' . ' '.$dep;
-        echo "<p>command: $command </p>";
 	system($command);
       }
     }
@@ -36,6 +35,19 @@
 		<?php echo $errDep; ?>
 		<input name="submit" type = "submit"class="btn btn-primary">
 	</form>
+  <?php
+    $dep= escapeshellarg($_POST['dep']);
+    if(isset($_POST['submit'])) {
+      if(empty($_POST['dep'])) {
+        $errDep= 'Please enter the department';
+      } else {
+	echo " The form has been submitted. ";
+     
+     	$command = 'java -cp .:mysql-connector-java-5.1.40-bin.jar HW5 ' .'viewCourses' . ' '.$dep;
+	system($command);
+      }
+    }
+  ?>
 </div>
 </body>
 </html>
