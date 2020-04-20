@@ -27,10 +27,12 @@
 <input name="submit" type = "submit"class="btn btn-primary">
 </form>
 <?php
+    // variables used
     $id= escapeshellarg($_POST['id']);
     $fname= escapeshellarg($_POST['fname']);
     $lname = escapeshellarg( $_POST['lname']);      
     $major = escapeshellarg( $_POST['major']); 
+    // error handling
     if(isset($_POST['submit'])) {
       if(empty($_POST['id'])) {
         $errID= 'Please enter the student id';
@@ -44,6 +46,7 @@
       else if(empty($_POST['major'])) {
         $errMajor = 'Please enter the student major';
       } else {
+         //  runs java and supplies the program with the function name and parameters
         echo " The form has been submitted. ";
      
      	$command = 'java -cp .:mysql-connector-java-5.1.40-bin.jar HW5 ' .'addStudent' . ' ' .$id. ' ' .$fname. ' ' .$lname. ' '.$major;
@@ -51,6 +54,28 @@
       }
     }
   ?>
+<h1 class="col-8">Add a student to the Student table.</h1>
+<!-- button back to the home page -->
+<form action="http://www.csce.uark.edu/~cggschwe/DB-Final-Project/HW5.php">
+<input type="submit" value="Go Back" class="btn btn-primary"/> </form>
+<div class="container col-md-6">
+<!-- Form to get user input -->
+<!-- includes error handling, incase the field is empty -->
+<form action="option1.php" method="post" role="form">
+<label for="id" class="col-sm-8 col-form-label">Student ID:</label> 
+	 <input class="form-control"type="text" name = "id">
+	<?php echo $errID; ?>
+<label for="fname" class="col-sm-8 col-form-label">Student First Name:</label>
+<input class="form-control" type="text" name = "fname">
+	<?php echo $errFname; ?>
+<label for="lname" class="col-sm-8 col-form-label">Student Last Name:</label>
+	<input class="form-control" type="text" name = "lname">
+	<?php echo $errLname; ?>
+<label for="major" class="col-sm-8 col-form-label">Student Major:</label> 
+	<input class="form-control" type="text" name = "major">
+	<?php echo $errMajor; ?>
+<input name="submit" type = "submit"class="btn btn-primary">
+</form>
 </div>
 </body>
 </html>
